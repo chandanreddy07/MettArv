@@ -1,10 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import BlogHeader from "./BlogHeader";
 import PostFeed from "./PostFeed";
 import PostDetail from "./PostDetail";
 import UserProfile from "./UserProfile";
 import PostEditor from "./PostEditor";
 import AuthForm from "./AuthForm";
+import { useAuth } from "@/hooks/useAuth";
 import workspaceImageUrl from '@assets/generated_images/Blog_workspace_cover_image_1fda9668.png';
 import techImageUrl from '@assets/generated_images/Tech_blog_cover_image_553b51f6.png';
 import devAvatarUrl from '@assets/generated_images/Developer_profile_avatar_5119a3ce.png';
@@ -28,18 +29,29 @@ interface AppState {
 }
 
 export default function BlogApp() {
-  //todo: remove mock functionality
+  const { user, isLoading, isAuthenticated } = useAuth();
   const [appState, setAppState] = useState<AppState>({
     currentView: "feed",
     authMode: "login",
-    isAuthenticated: true, // Start as authenticated for demo
-    currentUser: {
-      id: "user-1",
-      name: "Sarah Chen",
-      avatar: devAvatarUrl,
-      email: "sarah@example.com"
-    }
+    isAuthenticated: false,
+    currentUser: undefined
   });
+
+  // Update app state when authentication changes
+  React.useEffect(() => {
+    if (!isLoading) {
+      setAppState(prev => ({
+        ...prev,
+        isAuthenticated,
+        currentUser: user ? {
+          id: user.id,
+          name: user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.firstName || user.email || 'User',
+          avatar: user.profileImageUrl || undefined,
+          email: user.email || ''
+        } : undefined
+      }));
+    }
+  }, [user, isAuthenticated, isLoading]);
 
   // Mock data
   const mockPosts = [
@@ -383,18 +395,37 @@ export default function BlogApp() {
     }
   };
 
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated, show auth form for login/register views, otherwise show public content
+  if (!appState.isAuthenticated && appState.currentView === "auth") {
+    return (
+      <div className="min-h-screen bg-background">
+        {renderContent()}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      {appState.isAuthenticated && (
-        <BlogHeader
-          isAuthenticated={appState.isAuthenticated}
-          user={appState.currentUser}
-          onCreatePost={() => navigateToEditor()}
-          onLogin={() => navigateToAuth("login")}
-          onLogout={handleLogout}
-          onSearch={handleSearch}
-        />
-      )}
+      <BlogHeader
+        isAuthenticated={appState.isAuthenticated}
+        user={appState.currentUser}
+        onCreatePost={() => navigateToEditor()}
+        onLogin={() => navigateToAuth("login")}
+        onLogout={handleLogout}
+        onSearch={handleSearch}
+      />
       {renderContent()}
     </div>
   );
