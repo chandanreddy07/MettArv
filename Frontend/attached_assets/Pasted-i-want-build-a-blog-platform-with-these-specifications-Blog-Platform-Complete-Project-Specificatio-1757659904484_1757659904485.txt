@@ -1,0 +1,262 @@
+i want build a blog platform with these specifications Blog Platform – Complete Project Specification
+1. Overview
+
+A full-stack blog platform that allows users to register, log in, create blog posts, edit/delete their own posts, and view posts from other authors. It should be visually appealing, user-friendly, secure, and optimized for both desktop and mobile.
+
+2. Core Features
+
+Here’s the finalized feature set:
+
+User Authentication
+
+JWT-based authentication (Register, Login, Logout).
+
+Google OAuth using Replit Auth (optional quick login).
+
+Email verification using SendGrid before account activation.
+
+User Profiles
+
+Author profile page showing:
+
+Profile picture, name, bio.
+
+List of authored blog posts (with draft/published filter).
+
+Blog Posts
+
+CRUD functionality: Create, Read, Update, Delete.
+
+Draft vs Published states.
+
+SEO-friendly slugs for URLs (e.g., /blog/why-react-is-awesome).
+
+Rich text editor for formatting.
+
+Posts include title, cover image, content, tags, publish date, author.
+
+Blog Feed
+
+Paginated feed of all published posts.
+
+Basic search bar (search by title, tag, or author).
+
+Cards with post thumbnail, title, excerpt, and author info.
+
+Post Detail View
+
+Full article view with formatting.
+
+Author details section.
+
+Related posts section (optional MVP+ feature).
+
+Access Control
+
+Only owners can edit/delete their posts.
+
+Admin role (optional future enhancement).
+
+Frontend
+
+React with Redux Toolkit for state management.
+
+SCSS for styling (consistent design system).
+
+Mobile-first responsive UI.
+
+Integrations
+
+SendGrid for email verification & notifications.
+
+Replit Auth for Google login.
+
+3. Architecture
+
+Frontend: React + Redux Toolkit + SCSS.
+
+Backend: Node.js + Express.
+
+Database: MongoDB (NoSQL, flexible schema for posts & users).
+
+Authentication: JWT + OAuth (Google).
+
+Hosting:
+
+Backend: Render/Heroku/Replit.
+
+Frontend: Vercel/Netlify.
+
+Database: MongoDB Atlas.
+
+4. Database Schema Design
+Users Collection
+{
+  "id": "uuid",
+  "name": "string",
+  "email": "string",
+  "passwordHash": "string",
+  "bio": "string",
+  "profilePicture": "string (URL)",
+  "isVerified": "boolean",
+  "createdAt": "date",
+  "updatedAt": "date"
+}
+
+Posts Collection
+{
+  "id": "uuid",
+  "authorId": "uuid",
+  "title": "string",
+  "slug": "string (unique)",
+  "content": "rich-text JSON or HTML",
+  "coverImage": "string (URL)",
+  "tags": ["string"],
+  "status": "draft | published",
+  "createdAt": "date",
+  "updatedAt": "date"
+}
+
+5. User Flows
+Authentication Flow
+
+User registers → verification email via SendGrid → clicks link → account activated.
+
+User logs in with credentials or Google OAuth.
+
+JWT token stored in HttpOnly cookies (for security).
+
+Post Management Flow
+
+User clicks Create Post → opens rich text editor.
+
+Can save as draft or publish.
+
+Post appears in profile and global feed (if published).
+
+Feed Flow
+
+User opens homepage.
+
+Posts are fetched in paginated form.
+
+Clicking a post → navigates to detail view.
+
+6. Frontend Pages & UI
+Pages
+
+Home / Feed
+
+Paginated list of blog posts.
+
+Search bar on top.
+
+Register/Login
+
+Simple forms + Google login button.
+
+Profile Page
+
+Profile info + user’s posts list (draft & published).
+
+Create/Edit Post
+
+Rich text editor + cover image upload + tags input.
+
+Post Detail
+
+Full content + author info + related posts section.
+
+UI/UX Design Guidelines
+
+Typography: Use a clean Google Font (e.g., Inter, Roboto, or Lato).
+
+Colors: Light mode first, Dark mode optional.
+
+Components:
+
+Navbar with Login/Profile button.
+
+Card component for blog posts.
+
+Buttons with clear hover effects.
+
+Form inputs styled consistently.
+
+7. Tech Stack
+
+Frontend: React, Redux Toolkit, SCSS.
+
+Backend: Node.js, Express.
+
+Database: MongoDB.
+
+Auth: JWT, Google OAuth.
+
+Email: SendGrid.
+
+Hosting: Vercel (frontend), Render/Heroku (backend), MongoDB Atlas.
+
+8. Step-by-Step Development Plan
+
+Setup
+
+Initialize GitHub repo.
+
+Create backend (Node/Express + MongoDB).
+
+Create frontend (React + Redux).
+
+Backend Development
+
+Implement user model, authentication routes.
+
+Implement CRUD for posts.
+
+Add ownership validation.
+
+Integrate SendGrid email verification.
+
+Frontend Development
+
+Build authentication pages.
+
+Create post feed with pagination.
+
+Create profile page.
+
+Implement post detail view.
+
+Add Create/Edit post forms (rich text editor).
+
+Integrations
+
+Google OAuth (Replit Auth).
+
+Email verification (SendGrid).
+
+Styling & Responsiveness
+
+SCSS with reusable components.
+
+Test on desktop & mobile screens.
+
+Testing & Deployment
+
+Unit tests for backend (Jest).
+
+Integration tests for frontend.
+
+Deploy backend + frontend.
+
+9. Future Enhancements (Post-MVP)
+
+Comments on posts.
+
+Like & share functionality.
+
+Categories & advanced search.
+
+Notifications (email/push).
+
+Admin dashboard.
